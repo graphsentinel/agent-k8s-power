@@ -1,0 +1,23 @@
+# M1: KEP-5284 constrained impersonation as released. The agent SA has no direct rights; it may impersonate
+# oidc:alice only to get configmaps/app-config in team-a.
+apiVersion: v1
+kind: List
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRole
+  metadata: {name: s1-agent-impersonate-alice, labels: {s1/placement: m1}}
+  rules: [{apiGroups: [authentication.k8s.io], resources: [users], resourceNames: ["oidc:alice"], verbs: ["impersonate:user-info"]}]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRoleBinding
+  metadata: {name: s1-agent-impersonate-alice, labels: {s1/placement: m1}}
+  roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: s1-agent-impersonate-alice}
+  subjects: [{kind: ServiceAccount, name: coding-agent, namespace: agents}]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata: {name: s1-agent-task, namespace: team-a, labels: {s1/placement: m1}}
+  rules: [{apiGroups: [""], resources: [configmaps], resourceNames: [app-config], verbs: ["impersonate-on:user-info:get"]}]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata: {name: s1-agent-task, namespace: team-a, labels: {s1/placement: m1}}
+  roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: s1-agent-task}
+  subjects: [{kind: ServiceAccount, name: coding-agent, namespace: agents}]

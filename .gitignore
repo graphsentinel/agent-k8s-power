@@ -1,0 +1,18 @@
+# Generated for each cluster by scripts/platform.sh cluster-up (lab CA, server certificates, kube-apiserver files)
+lab/tls/*.key
+lab/tls/*.pem
+lab/tls/*.srl
+lab/k3s/*.yaml
+lab/k3s/*.kubeconfig
+
+# Produced by running the lab (scripts/lab.sh test): keep them local
+results/
+evidence/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]T*/
+lab/.runtime/
+__pycache__/
+
+# Never commit credentials
+.env
+*.key
+*.kubeconfig
+*.tar

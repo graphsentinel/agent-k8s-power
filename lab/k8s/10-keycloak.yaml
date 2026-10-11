@@ -1,0 +1,44 @@
+# Keycloak 26.8.0, dev mode over HTTPS, realm s1. The issuer is pinned with KC_HOSTNAME, so every token carries
+# iss=https://keycloak.s1-idp.svc:8443/realms/s1. The Service has a fixed ClusterIP that the k3d server node maps
+# to keycloak.s1-idp.svc (--host-alias), because kube-apiserver does not use cluster DNS (preflight P-8).
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: keycloak, namespace: s1-idp}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: keycloak}}
+  template:
+    metadata: {labels: {app: keycloak}}
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:26.8.0
+        imagePullPolicy: Never
+        args: ["start-dev", "--import-realm"]
+        env:
+        - {name: KC_HOSTNAME, value: "https://keycloak.s1-idp.svc:8443"}
+        - {name: KC_HTTPS_PORT, value: "8443"}
+        - {name: KC_HTTPS_CERTIFICATE_FILE, value: /tls/tls.crt}
+        - {name: KC_HTTPS_CERTIFICATE_KEY_FILE, value: /tls/tls.key}
+        - {name: KC_HEALTH_ENABLED, value: "true"}
+        - {name: KC_BOOTSTRAP_ADMIN_USERNAME, value: admin}
+        - {name: KC_BOOTSTRAP_ADMIN_PASSWORD, value: admin-lab-pw}
+        ports: [{containerPort: 8443, name: https}, {containerPort: 9000, name: mgmt}]
+        readinessProbe:
+          httpGet: {path: /health/ready, port: 9000, scheme: HTTPS}
+          periodSeconds: 5
+          failureThreshold: 60
+        volumeMounts:
+        - {name: realm, mountPath: /opt/keycloak/data/import}
+        - {name: tls, mountPath: /tls}
+      volumes:
+      - {name: realm, configMap: {name: realm-s1}}
+      - {name: tls, secret: {secretName: keycloak-tls}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: keycloak, namespace: s1-idp}
+spec:
+  clusterIP: 10.43.200.10
+  selector: {app: keycloak}
+  ports: [{name: https, port: 8443, targetPort: 8443}]

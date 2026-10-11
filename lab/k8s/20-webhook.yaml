@@ -1,0 +1,39 @@
+# PR-text prototype of the KEP-5917 constraint authorizer (lab/webhook/s1_constraints.py). Switches are env vars;
+# lab/run-placement.sh changes them and records them in the run manifest.
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: s1-authz, namespace: s1-authz}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: s1-authz}}
+  template:
+    metadata: {labels: {app: s1-authz}}
+    spec:
+      containers:
+      - name: webhook
+        image: docker.io/library/python:3.14.8-slim-trixie
+        imagePullPolicy: Never
+        command: ["python3", "-u", "/code/s1_constraints.py"]
+        env:
+        - {name: NAMES, value: pr}
+        - {name: NSEMPTY, value: pr}
+        - {name: PARSE, value: pr}
+        - {name: IMP, value: pr}
+        ports: [{containerPort: 8443}]
+        readinessProbe:
+          httpGet: {path: /healthz, port: 8443, scheme: HTTPS}
+          periodSeconds: 2
+        volumeMounts:
+        - {name: code, mountPath: /code}
+        - {name: tls, mountPath: /tls}
+      volumes:
+      - {name: code, configMap: {name: s1-authz-code}}
+      - {name: tls, secret: {secretName: webhook-tls}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: s1-authz, namespace: s1-authz}
+spec:
+  clusterIP: 10.43.200.20
+  selector: {app: s1-authz}
+  ports: [{name: https, port: 8443, targetPort: 8443}]

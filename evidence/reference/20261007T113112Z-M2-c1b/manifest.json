@@ -1,0 +1,30 @@
+{
+ "run_id": "20261007T113112Z-M2-c1b",
+ "placement": "M2",
+ "config": "c1b",
+ "k3s_image": "docker.io/rancher/k3s:v1.37.1-k3s1",
+ "server_version": "{\n  \"clientVersion\": {\n    \"major\": \"1\",\n    \"minor\": \"35\",\n    \"gitVersion\": \"v1.35.0\",\n    \"gitCommit\": \"66452049f3d692768c39c797b21b793dce80314e\",\n    \"gitTreeState\": \"clean\",\n    \"buildDate\": \"2025-12-17T12:41:05Z\",\n    \"goVersion\": \"go1.25.5\",\n    \"compiler\": \"gc\",\n    \"platform\": \"linux/amd64\"\n  },\n  \"kustomizeVersion\": \"v5.7.1\",\n  \"serverVersion\": {\n    \"major\": \"1\",\n    \"minor\": \"37\",\n    \"emulationMajor\": \"1\",\n    \"emulationMinor\": \"37\",\n    \"minCompatibilityMajor\": \"1\",\n    \"minCompatibilityMinor\": \"36\",\n    \"gitVersion\": \"v1.37.1+k3s1\",\n    \"gitCommit\": \"356c025475bbefaa09cf0d7e48e8e2adbbde57db\",\n    \"gitTreeState\": \"clean\",\n    \"buildDate\": \"2026-09-30T16:04:23Z\",\n    \"goVersion\": \"go1.26.8\",\n    \"compiler\": \"gc\",\n    \"platform\": \"linux/amd64\"\n  }\n}",
+ "keycloak_image": "quay.io/keycloak/keycloak:26.8.0",
+ "manifests_sha256_12": {
+  "driver.py": "f4dbff96cac4",
+  "audit-policy.yaml": "aa00c9662138",
+  "authn.yaml": "a9373dd37510",
+  "authz.yaml": "7419cf8897e9",
+  "00-namespaces.yaml": "fb10b0ac6de9",
+  "05-workload.yaml": "b8f4888716b0",
+  "06-rbac-base.yaml": "d13ab2b966f5",
+  "10-keycloak.yaml": "56f9684e3f42",
+  "20-webhook.yaml": "fcf399a2bac6",
+  "30-m0.yaml": "36d2ea62d476",
+  "31-m1.yaml": "87de23ae1674",
+  "32-m1l.yaml": "c280232ec943",
+  "40-var-w1a.yaml": "296f87ee1a99",
+  "41-var-w1b.yaml": "f23556cb7b1f",
+  "42-var-g1.yaml": "366a3cb18a68",
+  "43-var-c1x.yaml": "7450300de4cd",
+  "44-var-i3x.yaml": "9af1e34ffbc4",
+  "45-var-i3alice.yaml": "b28cef0266e3",
+  "realm-s1.json": "795fc7c09c81",
+  "s1_constraints.py": "183be233d4b3"
+ }
+}

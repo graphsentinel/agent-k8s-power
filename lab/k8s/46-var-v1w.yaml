@@ -1,0 +1,13 @@
+# V1 on M1: the task role also allows a named watch of app-config (impersonating alice).
+apiVersion: v1
+kind: List
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata: {name: s1-var-v1w, namespace: team-a, labels: {s1/variant: "v1w"}}
+  rules: [{apiGroups: [""], resources: [configmaps], resourceNames: [app-config], verbs: ["impersonate-on:user-info:get", "impersonate-on:user-info:watch"]}]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata: {name: s1-var-v1w, namespace: team-a, labels: {s1/variant: "v1w"}}
+  roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: s1-var-v1w}
+  subjects: [{kind: ServiceAccount, name: coding-agent, namespace: agents}]

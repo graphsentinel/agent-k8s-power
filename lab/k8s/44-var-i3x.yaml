@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRole
+  metadata: {name: s1-var-i3x, labels: {s1/variant: "i3x"}}
+  rules: [{apiGroups: [authentication.k8s.io], resources: ["userextras/s1.lab.example/constraints"], verbs: [impersonate]}]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRoleBinding
+  metadata: {name: s1-var-i3x, labels: {s1/variant: "i3x"}}
+  roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: s1-var-i3x}
+  subjects: [{kind: ServiceAccount, name: coding-agent, namespace: agents}]

@@ -1,0 +1,23 @@
+{
+  "realm": "s1",
+  "enabled": true,
+  "accessTokenLifespan": 300,
+  "users": [
+    {"username": "alice", "enabled": true, "email": "alice@lab.example", "emailVerified": true,
+     "firstName": "Alice", "lastName": "Lab",
+     "credentials": [{"type": "password", "value": "alice-lab-pw", "temporary": false}]}
+  ],
+  "clients": [
+    {"clientId": "coding-agent", "enabled": true, "publicClient": true,
+     "standardFlowEnabled": false, "directAccessGrantsEnabled": true,
+     "protocolMappers": [
+       {"name": "aud-kubernetes", "protocol": "openid-connect", "protocolMapper": "oidc-audience-mapper",
+        "config": {"included.custom.audience": "kubernetes", "access.token.claim": "true", "id.token.claim": "false"}}]},
+    {"clientId": "coding-agent-short", "enabled": true, "publicClient": true,
+     "standardFlowEnabled": false, "directAccessGrantsEnabled": true,
+     "attributes": {"access.token.lifespan": "60"},
+     "protocolMappers": [
+       {"name": "aud-kubernetes", "protocol": "openid-connect", "protocolMapper": "oidc-audience-mapper",
+        "config": {"included.custom.audience": "kubernetes", "access.token.claim": "true", "id.token.claim": "false"}}]}
+  ]
+}

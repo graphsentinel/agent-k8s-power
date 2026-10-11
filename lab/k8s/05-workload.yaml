@@ -1,0 +1,45 @@
+# Objects under test and the identities around them (measurement contract §1).
+apiVersion: v1
+kind: List
+items:
+- {apiVersion: v1, kind: ConfigMap, metadata: {name: app-config, namespace: team-a}, data: {feature_flag: "on", owner: team-a}}
+- {apiVersion: v1, kind: ConfigMap, metadata: {name: db-config, namespace: team-a}, data: {db_host: "db.team-a.svc"}}
+- {apiVersion: v1, kind: Secret, metadata: {name: db-pass, namespace: team-a}, stringData: {password: "lab-only-not-a-secret"}}
+- {apiVersion: v1, kind: ConfigMap, metadata: {name: app-config, namespace: team-b}, data: {owner: team-b}}
+- {apiVersion: v1, kind: ConfigMap, metadata: {name: own, namespace: thief}, data: {owner: thief}}
+- {apiVersion: v1, kind: ServiceAccount, metadata: {name: deployer, namespace: team-a}}
+- {apiVersion: v1, kind: ServiceAccount, metadata: {name: coding-agent, namespace: agents}}
+- {apiVersion: v1, kind: ServiceAccount, metadata: {name: thief, namespace: thief}}
+# toolbox runs as deployer: the target of I4-b (pods/exec)
+- apiVersion: v1
+  kind: Pod
+  metadata: {name: toolbox, namespace: team-a}
+  spec:
+    serviceAccountName: deployer
+    containers:
+    - {name: toolbox, image: docker.io/library/python:3.14.8-slim-trixie, imagePullPolicy: Never, command: ["sleep", "infinity"]}
+# driver pods: the agent (agents/coding-agent) and the second client (thief/thief)
+- apiVersion: v1
+  kind: Pod
+  metadata: {name: driver, namespace: agents}
+  spec:
+    serviceAccountName: coding-agent
+    containers:
+    - name: driver
+      image: docker.io/library/python:3.14.8-slim-trixie
+      imagePullPolicy: Never
+      command: ["sleep", "infinity"]
+      volumeMounts: [{name: lab-ca, mountPath: /lab-ca}]
+    volumes: [{name: lab-ca, configMap: {name: lab-ca}}]
+- apiVersion: v1
+  kind: Pod
+  metadata: {name: driver, namespace: thief}
+  spec:
+    serviceAccountName: thief
+    containers:
+    - name: driver
+      image: docker.io/library/python:3.14.8-slim-trixie
+      imagePullPolicy: Never
+      command: ["sleep", "infinity"]
+      volumeMounts: [{name: lab-ca, mountPath: /lab-ca}]
+    volumes: [{name: lab-ca, configMap: {name: lab-ca}}]
