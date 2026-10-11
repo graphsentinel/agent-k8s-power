@@ -1,0 +1,69 @@
+
+==> pull quay.io/keycloak/keycloak:26.8.0 docker.io/library/python:3.14.8-slim-trixie
+
+==> images into k3d
+[36mINFO[0m[0000] Importing image(s) into cluster 's1-agent-power' 
+[36mINFO[0m[0000] Starting new tools node...                   
+[36mINFO[0m[0006] Starting node 'k3d-s1-agent-power-tools'     
+[36mINFO[0m[0006] Saving 1 tarball(s) to shared image volume... 
+[36mINFO[0m[0007] Importing images into nodes...               
+[36mINFO[0m[0007] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011170901-file-images.tar' into node 'k3d-s1-agent-power-server-0'... 
+[36mINFO[0m[0007] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011170901-file-images.tar' into node 'k3d-s1-agent-power-agent-0'... 
+[36mINFO[0m[0029] Removing the tarball(s) from image volume... 
+[36mINFO[0m[0030] Removing k3d-tools node...                   
+[36mINFO[0m[0033] Successfully imported image(s)               
+[36mINFO[0m[0033] Successfully imported 1 image(s) into 1 cluster(s) 
+all 2 images present on every node
+
+==> namespaces, TLS secrets, config maps
+
+==> workloads, base RBAC, Keycloak, webhook
+Waiting for deployment "keycloak" rollout to finish: 0 of 1 updated replicas are available...
+deployment "keycloak" successfully rolled out
+deployment "s1-authz" successfully rolled out
+pod/driver condition met
+pod/driver condition met
+
+==> Keycloak task scopes (driver/setup_keycloak.py)
+ready
+
+==> run 1/1
+--- M0 c1
+{"run": "20261011T141023Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T141029Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T141040Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T141046Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T141231Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T141248Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T141313Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T141316Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T141342Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T141408Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T141434Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T141614Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T141625Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+Measurements since 2026-10-11T14:10:23Z: 210 rows; runs per cell expected: 1
+
+| suite | expected cells | matching cells |
+|---|---|---|
+| c1 | 179 | 179 |
+| c1b | 8 | 8 |
+| v1 | 23 | 23 |
+
+verdicts in the new rows: {'MATCH': 107, 'OBSERVED': 100, 'UNREACHABLE': 3}
+cells matching lab/expected.tsv: 210 of 210
+
+ALL CHECKS PASSED

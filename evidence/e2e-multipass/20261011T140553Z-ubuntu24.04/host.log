@@ -1,0 +1,27 @@
+
+==> launch s1-e2e: Ubuntu 24.04, 8 CPU, 16G, 60G
+
+==> copy source: committed tree a6e05eff82aa52a9675f722bddf6258c12bbfe28
+
+==> scripts/platform.sh install && scripts/platform.sh cluster-up
+01-platform-install-cluster-up: exit 0, 77 s
+
+==> RUNS=1 scripts/lab.sh all
+02-lab-all: exit 0, 548 s
+raw evidence: raw-evidence-main.tar.gz
+
+==> scripts/lab.sh reinstall && scripts/lab.sh status
+03-lab-reinstall: exit 0, 105 s
+
+==> RUNS=1 scripts/lab.sh test
+04-lab-test-after-reinstall: exit 0, 398 s
+raw evidence: raw-evidence-after-reinstall.tar.gz
+
+==> scripts/lab.sh uninstall
+05-lab-uninstall: exit 0, 39 s
+
+==> scripts/platform.sh status && kubectl --context k3d-s1-agent-power wait --for=condition=Ready node --all --timeout=60s
+06-platform-after-uninstall: exit 0, 1 s
+
+==> fetch results
+result: exit 0

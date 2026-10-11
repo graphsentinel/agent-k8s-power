@@ -1,0 +1,139 @@
+
+==> apt packages: git, openssl, python3, curl, ca-certificates already installed, left unchanged
+
+==> Docker from Ubuntu's docker.io package, service enabled, ubuntu added to group docker
+Hit:1 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Hit:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base pigz runc ubuntu-fan
+Suggested packages:
+  ifupdown aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx
+  docker-compose-v2 docker-doc rinse zfs-fuse | zfsutils
+The following NEW packages will be installed:
+  bridge-utils containerd dns-root-data dnsmasq-base docker.io pigz runc
+  ubuntu-fan
+0 upgraded, 8 newly installed, 0 to remove and 27 not upgraded.
+Need to get 73.8 MB of archives.
+After this operation, 279 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/universe amd64 pigz amd64 2.8-1 [65.6 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 bridge-utils amd64 1.7.1-1ubuntu2 [33.9 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 runc amd64 1.3.4-0ubuntu1~24.04.1 [9574 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 containerd amd64 2.2.1-0ubuntu1~24.04.3 [28.1 MB]
+Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dns-root-data all 2024071801~ubuntu0.24.04.1 [5918 B]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dnsmasq-base amd64 2.91-0ubuntu0.24.04.2 [381 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 docker.io amd64 29.1.3-0ubuntu3~24.04.2 [35.6 MB]
+Get:8 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 ubuntu-fan all 0.12.16+24.04.1 [34.2 kB]
+Preconfiguring packages ...
+Fetched 73.8 MB in 7s (11.1 MB/s)
+Selecting previously unselected package pigz.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 75053 files and directories currently installed.)
+Preparing to unpack .../0-pigz_2.8-1_amd64.deb ...
+Unpacking pigz (2.8-1) ...
+Selecting previously unselected package bridge-utils.
+Preparing to unpack .../1-bridge-utils_1.7.1-1ubuntu2_amd64.deb ...
+Unpacking bridge-utils (1.7.1-1ubuntu2) ...
+Selecting previously unselected package runc.
+Preparing to unpack .../2-runc_1.3.4-0ubuntu1~24.04.1_amd64.deb ...
+Unpacking runc (1.3.4-0ubuntu1~24.04.1) ...
+Selecting previously unselected package containerd.
+Preparing to unpack .../3-containerd_2.2.1-0ubuntu1~24.04.3_amd64.deb ...
+Unpacking containerd (2.2.1-0ubuntu1~24.04.3) ...
+Selecting previously unselected package dns-root-data.
+Preparing to unpack .../4-dns-root-data_2024071801~ubuntu0.24.04.1_all.deb ...
+Unpacking dns-root-data (2024071801~ubuntu0.24.04.1) ...
+Selecting previously unselected package dnsmasq-base.
+Preparing to unpack .../5-dnsmasq-base_2.91-0ubuntu0.24.04.2_amd64.deb ...
+Unpacking dnsmasq-base (2.91-0ubuntu0.24.04.2) ...
+Selecting previously unselected package docker.io.
+Preparing to unpack .../6-docker.io_29.1.3-0ubuntu3~24.04.2_amd64.deb ...
+Unpacking docker.io (29.1.3-0ubuntu3~24.04.2) ...
+Selecting previously unselected package ubuntu-fan.
+Preparing to unpack .../7-ubuntu-fan_0.12.16+24.04.1_all.deb ...
+Unpacking ubuntu-fan (0.12.16+24.04.1) ...
+Setting up dnsmasq-base (2.91-0ubuntu0.24.04.2) ...
+Setting up runc (1.3.4-0ubuntu1~24.04.1) ...
+Setting up dns-root-data (2024071801~ubuntu0.24.04.1) ...
+Setting up bridge-utils (1.7.1-1ubuntu2) ...
+Setting up pigz (2.8-1) ...
+Setting up containerd (2.2.1-0ubuntu1~24.04.3) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /usr/lib/systemd/system/containerd.service.
+Setting up ubuntu-fan (0.12.16+24.04.1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/ubuntu-fan.service → /usr/lib/systemd/system/ubuntu-fan.service.
+Setting up docker.io (29.1.3-0ubuntu3~24.04.2) ...
+info: Selecting GID from range 100 to 999 ...
+info: Adding group `docker' (GID 112) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /usr/lib/systemd/system/docker.socket.
+Processing triggers for dbus (1.14.10-4ubuntu4.1) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+
+==> kubectl v1.37.1 (dl.k8s.io)
+/tmp/tmp.MhyAbSEIzp/kubectl: OK
+
+==> k3d v5.9.0 (github.com/k3d-io/k3d)
+/tmp/tmp.MhyAbSEIzp/k3d: OK
+
+==> inotify limits for k3s-in-docker
+  fs.inotify.max_user_instances 128 -> 1024
+  fs.inotify.max_user_watches 124422 -> 1048576
+
+==> tools
+  docker   
+Docker version 29.1.3, build 29.1.3-0ubuntu3~24.04.2
+  python3  3.12.3
+  openssl  3.0.13
+  kubectl  v1.37.1
+  k3d      v5.9.0
+
+You were added to the docker group; the next commands pick it up by themselves (sg docker). Next:
+  scripts/platform.sh cluster-up
+  scripts/lab.sh all
+
+==> lab CA and certificates (lab/tls), kube-apiserver configuration (lab/k3s)
+regenerated; run lab/k3s/gen-config.sh to embed the new CA
+generated
+
+==> k3d cluster s1-agent-power (docker.io/rancher/k3s:v1.37.1-k3s1): 1 server, 1 agent, structured authn/authz and audit on the server
+[36mINFO[0m[0000] Prep: Network                                
+[36mINFO[0m[0000] Created network 'k3d-s1-agent-power'         
+[36mINFO[0m[0000] Created image volume k3d-s1-agent-power-images 
+[36mINFO[0m[0000] Starting new tools node...                   
+[36mINFO[0m[0001] Creating node 'k3d-s1-agent-power-server-0'  
+[36mINFO[0m[0001] Pulling image 'ghcr.io/k3d-io/k3d-tools:5.9.0' 
+[36mINFO[0m[0002] Pulling image 'docker.io/rancher/k3s:v1.37.1-k3s1' 
+[36mINFO[0m[0004] Starting node 'k3d-s1-agent-power-tools'     
+[36mINFO[0m[0015] Creating node 'k3d-s1-agent-power-agent-0'   
+[36mINFO[0m[0015] Creating LoadBalancer 'k3d-s1-agent-power-serverlb' 
+[36mINFO[0m[0016] Pulling image 'ghcr.io/k3d-io/k3d-proxy:5.9.0' 
+[36mINFO[0m[0021] Using the k3d-tools node to gather environment information 
+[36mINFO[0m[0022] HostIP: using network gateway 172.18.0.1 address 
+[36mINFO[0m[0022] Starting cluster 's1-agent-power'            
+[36mINFO[0m[0022] Starting servers...                          
+[36mINFO[0m[0022] Starting node 'k3d-s1-agent-power-server-0'  
+[36mINFO[0m[0028] Starting agents...                           
+[36mINFO[0m[0029] Starting node 'k3d-s1-agent-power-agent-0'   
+[36mINFO[0m[0032] Starting helpers...                          
+[36mINFO[0m[0032] Starting node 'k3d-s1-agent-power-serverlb'  
+[36mINFO[0m[0039] Injecting records for hostAliases (incl. host.k3d.internal) and for 3 network members into CoreDNS configmap... 
+[36mINFO[0m[0041] Cluster 's1-agent-power' created successfully! 
+[36mINFO[0m[0041] You can now use it like this:                
+kubectl cluster-info
+node/k3d-s1-agent-power-agent-0 condition met
+node/k3d-s1-agent-power-server-0 condition met
+kube context: k3d-s1-agent-power

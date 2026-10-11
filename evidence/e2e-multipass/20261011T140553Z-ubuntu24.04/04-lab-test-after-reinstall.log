@@ -1,0 +1,41 @@
+
+==> run 1/1
+--- M0 c1
+{"run": "20261011T141848Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T141853Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T141906Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T141912Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T142055Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T142113Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T142137Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T142141Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T142207Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T142233Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T142258Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T142439Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T142449Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+Measurements since 2026-10-11T14:18:48Z: 210 rows; runs per cell expected: 1
+
+| suite | expected cells | matching cells |
+|---|---|---|
+| c1 | 179 | 179 |
+| c1b | 8 | 8 |
+| v1 | 23 | 23 |
+
+verdicts in the new rows: {'MATCH': 107, 'OBSERVED': 100, 'UNREACHABLE': 3}
+cells matching lab/expected.tsv: 210 of 210
+
+ALL CHECKS PASSED
