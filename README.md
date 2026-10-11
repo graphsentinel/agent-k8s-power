@@ -6,6 +6,8 @@ constraints** (KEP-5917, proposed in PR [kubernetes/enhancements#5918](https://g
 as a prototype of its proposed shape. Both are run against the same agent task and the same attacks, on a local k3d
 cluster that anyone can rebuild from zero with a few commands ([Quickstart](#quickstart)).
 
+Project page: https://graphsentinel.github.io/agent-k8s-power/
+
 - [The problem](#the-problem)
 - [What is compared](#what-is-compared)
 - [Results](#results)
