@@ -63,9 +63,14 @@ import_k3d() {
   elif ! docker save --platform "linux/$ARCH" -o "$tar" "$@" 2>/dev/null; then docker save -o "$tar" "$@"; fi
   k3d image import -c "$CLUSTER" "$tar"
   rm -f "$tar"
-  local node img have missing=0
-  for node in $(k3d node list -o json | python3 -c 'import sys,json;[print(n["name"]) for n in json.load(sys.stdin) if n["role"] in ("server","agent") and n["runtimeLabels"].get("k3d.cluster")=="'"$CLUSTER"'"]'); do
-    have=$($NODE_RT exec "$node" crictl images -o json | python3 -c 'import sys,json;[print(t) for i in json.load(sys.stdin)["images"] for t in i["repoTags"]]')
+  local node img have nodes missing=0
+  # every node of the cluster (1 server + 1 agent); a failed listing must not look like "nothing to check"
+  nodes=$(k3d node list -o json | python3 -c 'import sys,json;[print(n["name"]) for n in json.load(sys.stdin) if n["role"] in ("server","agent") and n["runtimeLabels"].get("k3d.cluster")=="'"$CLUSTER"'"]') \
+    || die "could not list the nodes of k3d cluster $CLUSTER"
+  [ "$(wc -w <<<"$nodes")" -ge 2 ] || die "expected a server and an agent node in $CLUSTER, found: ${nodes:-none}"
+  for node in $nodes; do
+    have=$($NODE_RT exec "$node" crictl images -o json | python3 -c 'import sys,json;[print(t) for i in json.load(sys.stdin)["images"] for t in i["repoTags"]]') \
+      || die "could not list the images on node $node"
     for img in "$@"; do grep -qx "$img" <<<"$have" || { echo "missing in $node: $img" >&2; missing=1; }; done
   done
   [ "$missing" = 0 ] || die "image import incomplete (see above)"
@@ -124,11 +129,15 @@ cmd_uninstall() {
   # only namespaces the lab labelled (lab/k8s/00-namespaces.yaml)
   $K delete ns -l "$LABEL=true" --ignore-not-found --wait=true --timeout=300s
   rm -f "$STATE/test-started" "$STATE/test-plan"
-  local left more
+  local left more sel
   left=$($K get ns -l "$LABEL=true" -o name) || die "could not verify the removal (API error)"
-  more=$($K get clusterrole,clusterrolebinding -l 's1/placement' -o name; $K get clusterrole,clusterrolebinding -l 's1/variant' -o name) \
-    || die "could not verify the removal (API error)"
-  left+=$more
+  left=${left:+$left$'\n'}
+  for sel in s1/placement s1/variant; do
+    more=$($K get clusterrole,clusterrolebinding -l "$sel" -o name) || die "could not verify the removal (API error)"
+    left+=${more:+$more$'\n'}
+    more=$($K get role,rolebinding -A -l "$sel" -o name) || die "could not verify the removal (API error)"
+    left+=${more:+$more$'\n'}
+  done
   [ -z "$left" ] || die "still present after uninstall: $(tr '\n' ' ' <<<"$left")"
   echo "removed; the cluster is still there (scripts/platform.sh cluster-down deletes it)"
 }

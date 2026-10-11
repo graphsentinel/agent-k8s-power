@@ -72,8 +72,9 @@ Attacks (each paired with positive controls in the same run, so a denial means t
 
 ## Results
 
-Reference measurement: 2026-10-07, k3s v1.37.1, Keycloak 26.8.0; config `c1` (30 runs, 179 cells), `c1b` (5 runs, A1
-audit level) and `v1` (30 runs, revocation tests). **Every cell gave the same outcome in each of its 5 runs**
+Reference measurement: 2026-10-07, k3s v1.37.1, Keycloak 26.8.0; config `c1` (6 plan entries × 5 = 30 runs, 179 cells), `c1b`
+(5 runs, A1 audit level) and `v1` (6 revocation tests × 5 = 30 runs). **Every cell gave the same outcome in each of
+its 5 runs**
 (repeatability in one lab setup, not coverage or conformance). Raw evidence of every run:
 [evidence/reference](evidence/reference); the expected outcome of each of the 210 cells:
 [lab/expected.tsv](lab/expected.tsv).
@@ -102,13 +103,16 @@ audit level) and `v1` (30 runs, revocation tests). **Every cell gave the same ou
 - **Aggregated API (A1):** the constraint reaches metrics-server's delegated SubjectAccessReview (team-a allowed,
   team-b denied).
 - **Tokens:** a token without the task scope is unconstrained; an audience that requires the claim rejects it (401).
-  A copied M0/M1 ServiceAccount token lived 31,536,000 s (in-pod token, extended lifetime); the M2 JWT 300 s.
+  A copied M0/M1 in-pod ServiceAccount token carried a validity of 31,536,000 s (`exp − iat`; kube-apiserver extends
+  in-pod tokens) and was accepted when replayed during the run; the M2 JWT carried 300 s.
 - **`can-i` drift:** under M1 SelfSubjectAccessReview reported the task as not allowed while it was, and a Secret as
   allowed while it was denied; under M2 SelfSubjectRulesReview reported the Secret as readable while the webhook
   denied it.
 
-**3. Revocation does not reach open watches.** In M0, M1 and M2, an agent whose permission was removed (or whose 60 s
-token expired) kept receiving events on a watch it had opened before, while new requests were refused. A token the
+**3. Revocation does not reach open watches.** For these tests the agent is first allowed a named watch of
+`app-config` (in M1 through `impersonate-on:user-info:watch`, [lab/k8s/46-var-v1w.yaml](lab/k8s/46-var-v1w.yaml)) and
+opens it; then that permission is removed (or its 60 s token expires). In M0, M1 and M2 the open watch kept receiving
+events, while new requests were refused. A token the
 agent minted for another ServiceAccount kept working after the agent lost its own bindings; a deleted ServiceAccount's
 token was still accepted for a few seconds (token authentication cache). This is the documented design, not a
 vulnerability: authorization happens when a request starts.
