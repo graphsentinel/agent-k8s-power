@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Kubernetes Power</title>
+<meta name="description" content="Shrinking an agent's Kubernetes power: constrained impersonation (KEP-5284) vs. a prototype of token constraints (KEP-5917), measured on a local cluster.">
+<style>
+:root {
+  --bg: #fbfaf7; --surface: #ffffff; --text: #1d2125; --muted: #5b636b; --line: #e3e0d9;
+  --accent: #0f6b5c; --accent-soft: #e2f1ee; --bad: #a33b2a; --bad-soft: #f8e6e2; --good: #1d6b3a; --good-soft: #e3f2e8;
+  --code-bg: #f1efe9;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171a; --surface: #1b1f23; --text: #e6e3dd; --muted: #a2a9b0; --line: #2d3238;
+    --accent: #5cc4ae; --accent-soft: #17312c; --bad: #f08a76; --bad-soft: #3a211c; --good: #7fd39b; --good-soft: #1a3324;
+    --code-bg: #22272c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171a; --surface: #1b1f23; --text: #e6e3dd; --muted: #a2a9b0; --line: #2d3238;
+  --accent: #5cc4ae; --accent-soft: #17312c; --bad: #f08a76; --bad-soft: #3a211c; --good: #7fd39b; --good-soft: #1a3324;
+  --code-bg: #22272c;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+a { color: var(--accent); }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 14px 16px; border-radius: 8px; overflow-x: auto; line-height: 1.5; }
+pre code { background: none; padding: 0; }
+.wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+header { border-bottom: 1px solid var(--line); background: var(--surface); }
+header .wrap { padding-top: 56px; padding-bottom: 44px; }
+.kicker { color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.8rem; margin: 0 0 10px; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.01em; }
+.lede { font-size: 1.15rem; color: var(--muted); max-width: 46em; margin: 0 0 26px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-block; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; border: 1px solid var(--line); color: var(--text); background: var(--bg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+section { padding: 48px 0 8px; }
+h2 { font-size: 1.5rem; margin: 0 0 14px; letter-spacing: -0.005em; }
+h3 { font-size: 1.05rem; margin: 22px 0 6px; }
+p { margin: 0 0 14px; }
+.muted { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 18px 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+.card .op { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; }
+.card .what { color: var(--muted); font-size: 0.95rem; margin: 4px 0 0; }
+blockquote { margin: 14px 0; padding: 10px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+blockquote p { margin: 0; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0; }
+.flow span { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 0.95rem; }
+.flow .arrow { border: none; background: none; padding: 0 2px; color: var(--muted); }
+.table-scroll { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.95rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
+tbody tr:last-child td { border-bottom: none; }
+td.allowed { color: var(--bad); background: var(--bad-soft); font-weight: 600; }
+td.denied { color: var(--good); background: var(--good-soft); font-weight: 600; }
+td.place { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; white-space: nowrap; }
+ol.findings { padding-left: 1.3em; }
+ol.findings li { margin: 0 0 12px; }
+.note { font-size: 0.92rem; color: var(--muted); }
+.evidence li { margin: 0 0 8px; }
+footer { border-top: 1px solid var(--line); margin-top: 56px; padding: 24px 0 40px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">Kubernetes SIG Auth · agent credentials · lab</p>
+    <h1>Shrinking an agent's Kubernetes power</h1>
+    <p class="lede">A coding agent asked to read one ConfigMap usually holds a credential that can do everything its
+      ServiceAccount, or the human who delegated to it, can do. This lab measures two mechanisms that narrow it,
+      constrained impersonation as released and a prototype of token constraints as proposed, against the same task
+      and the same attacks.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://github.com/graphsentinel/agent-k8s-power">Repository</a>
+      <a class="btn" href="#run">Run it yourself</a>
+      <a class="btn" href="#results">Results</a>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<section id="problem">
+  <h2>The problem</h2>
+  <p>KEP-5917's motivation says it directly:</p>
+  <blockquote><p>delegating an action to an agent today requires that a user trusts the agent (or the MCP server) to
+    have the same level of access to the cluster as they do.</p></blockquote>
+  <p>Two mechanisms can narrow that power, in different places:</p>
+  <div class="cards">
+    <div class="card"><div class="op">KEP-5284 · constrained impersonation</div><p class="what">beta since v1.36, on
+      by default. The limit lives in RBAC objects on the impersonator (<code>impersonate-on:&lt;mode&gt;:&lt;verb&gt;</code>),
+      set by whoever can write RBAC.</p></div>
+    <div class="card"><div class="op">KEP-5917 · authenticator-provided constraints</div><p class="what">proposed in
+      PR #5918. The limit lives in the token: the authenticator puts constraints into the user's extra fields and a
+      first-in-chain authorizer denies what they do not allow. Per token, so per task.</p></div>
+  </div>
+  <p>The lab asks, for one agent task: which attacks does each mechanism stop, where does each fall back to the wider
+    power, and does <code>kubectl auth can-i</code> tell the agent the truth?</p>
+  <p class="note">Not a claim that Kubernetes RBAC is insecure (the baseline is wide by configuration), not a statement
+    about KEP-5917's final behaviour (M2 and M3 are our prototype of the proposal's text), and not a vulnerability
+    report.</p>
+</section>
+<section id="approach">
+  <h2>What is compared</h2>
+  <p>The agent's task: <code>get configmaps/app-config</code> in namespace <code>team-a</code>, for Keycloak user
+    <code>alice</code> through the client <code>coding-agent</code>. Everything else is a forbidden action.</p>
+  <div class="flow">
+    <span>Keycloak token</span><span class="arrow">→</span>
+    <span>structured authentication <small class="muted">(claim → user.extra)</small></span><span class="arrow">→</span>
+    <span>constraint webhook <small class="muted">(first in chain)</small></span><span class="arrow">→</span>
+    <span>RBAC</span>
+  </div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Placement</th><th>What limits the agent</th><th>Mechanism</th></tr></thead>
+    <tbody>
+      <tr><td class="place">M0</td><td>nothing extra: the ServiceAccount has <code>admin</code> in team-a and <code>view</code> cluster-wide</td><td>baseline</td></tr>
+      <tr><td class="place">M1</td><td>may impersonate <code>oidc:alice</code> only for <code>get</code> on <code>app-config</code></td><td>KEP-5284 as released</td></tr>
+      <tr><td class="place">M1-L</td><td>M1 plus the legacy <code>impersonate</code> role from the docs' example</td><td>KEP-5284, documented fallback</td></tr>
+      <tr><td class="place">M2</td><td>the token from a task scope carries the constraint; a webhook enforces it first</td><td>our prototype of KEP-5917 (PR #5918 at <code>a346858</code>)</td></tr>
+      <tr><td class="place">M3</td><td>M2's token plus impersonation headers</td><td>our prototype, impersonation handling switched</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Where the PR text allows more than one reading, the prototype webhook has a switch and each reading
+    is measured. Every attack is paired with positive controls in the same run, so a denial means the mechanism denied
+    it.</p>
+</section>
+<section id="results">
+  <h2>Results</h2>
+  <p>210 measured cells; every cell gave the same outcome in each of its 5 runs (repeatability in one lab setup, not
+    coverage or conformance).</p>
+  <h3>Both mechanisms deny the forbidden actions in the tested configuration</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Forbidden action</th><th>M0</th><th>M1 (released)</th><th>M2 (prototype)</th></tr></thead>
+    <tbody>
+      <tr><td>other ConfigMap, Secret, PATCH, other namespace</td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied</td></tr>
+      <tr><td>LIST, WATCH, LIST across all namespaces</td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied</td></tr>
+      <tr><td>impersonate <code>team-a/deployer</code></td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied (M3)</td></tr>
+      <tr><td>mint a token for <code>deployer</code></td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied</td></tr>
+      <tr><td>create a pod as deployer, <code>pods/exec</code></td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied</td></tr>
+      <tr><td><code>metrics.k8s.io</code> pods in team-a</td><td class="allowed">allowed</td><td class="denied">denied</td><td class="denied">denied</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Where they differ</h3>
+  <ol class="findings">
+    <li><strong>M1 widens through RBAC around it.</strong> With the legacy <code>impersonate</code> role also bound,
+      every forbidden action is allowed. A <code>verbs: ["*"]</code> rule in the task Role allows direct LIST and PATCH
+      without impersonation, and a later <code>view</code> RoleBinding allows direct reads: the M1 limit is not on the
+      credential.</li>
+    <li><strong>M2's outcome depends on how the PR text is read.</strong> With a name-restricted rule, LIST across all
+      namespaces is allowed under one reading and denied under a stricter one; a malformed constraint gives the
+      agent's full RBAC unless parsing fails closed; a constraint that allows impersonation lets the impersonated
+      identity read the Secret unless impersonation fails hard.</li>
+    <li><strong>The constraint reaches an aggregated API.</strong> metrics-server's delegated SubjectAccessReview
+      carried it (team-a allowed, team-b denied).</li>
+    <li><strong><code>can-i</code> drifts.</strong> Under M1, SelfSubjectAccessReview reported the task as not allowed
+      while it was, and a Secret as allowed while it was denied; under M2, SelfSubjectRulesReview reported the Secret
+      as readable while the webhook denied it.</li>
+    <li><strong>Revocation does not reach open watches.</strong> In M0, M1 and M2, a watch opened while it was allowed
+      kept receiving events after the permission was removed or the 60 s token expired, while new requests were
+      refused. This is the documented design: authorization happens when a request starts.</li>
+  </ol>
+  <p class="note">Scope: k3s v1.37.1 with the RBAC objects in the repository, Keycloak 26.8.0, and our prototype of the
+    KEP-5917 text at <code>a346858</code>. The results say nothing about a future implementation of KEP-5917.</p>
+</section>
+<section id="run">
+  <h2>Run it yourself</h2>
+  <p>On Ubuntu 24.04 or 26.04 (4+ CPUs, 8 GB RAM, 20 GB disk). Tools that are already installed are left as they are;
+    Docker and Python come from Ubuntu's own packages.</p>
+<pre><code>git clone https://github.com/graphsentinel/agent-k8s-power.git &amp;&amp; cd agent-k8s-power
+scripts/platform.sh install      # Docker, python3, openssl; kubectl and k3d only if missing
+scripts/platform.sh cluster-up   # lab CA, kube-apiserver configuration, k3d cluster
+scripts/lab.sh all               # install the lab, run the plan, compare with the reference</code></pre>
+  <p>On a fresh 8-CPU VM one pass of the plan took about 10 minutes and five passes about 35, each ending with
+    <code>ALL CHECKS PASSED</code>. The lab can be removed and reinstalled without touching the cluster
+    (<code>scripts/lab.sh reinstall</code>). Details are in the <a href="https://github.com/graphsentinel/agent-k8s-power#how-to">README</a>.</p>
+</section>
+<section id="evidence">
+  <h2>Evidence</h2>
+  <ul class="evidence">
+    <li><a href="https://github.com/graphsentinel/agent-k8s-power/tree/main/evidence/reference">Reference measurement</a>: raw requests, responses, audit and
+      webhook logs of every run behind the results above.</li>
+    <li><a href="https://github.com/graphsentinel/agent-k8s-power/tree/main/evidence/e2e-multipass">From-zero verification runs</a>: fresh Ubuntu 26.04 (5 runs)
+      and 24.04 VMs, each with a reinstall and uninstall; 210 of 210 cells matched every time.</li>
+    <li><a href="https://github.com/graphsentinel/agent-k8s-power/blob/main/lab/expected.tsv">Expected outcome of every cell</a> and the
+      <a href="https://github.com/graphsentinel/agent-k8s-power/tree/main/lab">source</a>: manifests, prototype webhook, test driver and run scripts.</li>
+  </ul>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>Apache License 2.0 · <a href="https://github.com/graphsentinel/agent-k8s-power">github.com/graphsentinel/agent-k8s-power</a></p>
+  </div>
+</footer>
+</body>
+</html>
