@@ -90,6 +90,15 @@ cmd_install() {
   import_k3d "${IMAGES[@]}"
 
   log "namespaces, TLS secrets, config maps"
+  # never adopt a namespace the lab did not create: uninstall deletes every namespace carrying the lab label
+  local ns val
+  for ns in $(sed -n 's/.*metadata: {name: \([a-z0-9-]*\),.*/\1/p' "$ROOT/lab/k8s/00-namespaces.yaml"); do
+    val=$($K get ns "$ns" --ignore-not-found -o jsonpath="{.metadata.labels.agent-k8s-power/lab}") \
+      || die "could not read namespace $ns (API error)"
+    if [ -n "$($K get ns "$ns" --ignore-not-found -o name)" ] && [ "$val" != true ]; then
+      die "namespace $ns exists and was not created by this lab; use a cluster made by scripts/platform.sh cluster-up"
+    fi
+  done
   $K apply -f "$ROOT/lab/k8s/00-namespaces.yaml" >/dev/null
   $K -n s1-idp create secret tls keycloak-tls --cert="$ROOT/lab/tls/keycloak.pem" --key="$ROOT/lab/tls/keycloak.key" --dry-run=client -o yaml | apply_obj
   $K -n s1-authz create secret tls webhook-tls --cert="$ROOT/lab/tls/webhook.pem" --key="$ROOT/lab/tls/webhook.key" --dry-run=client -o yaml | apply_obj
