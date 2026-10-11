@@ -1,0 +1,40 @@
+
+==> placement and variant RBAC, workloads, Keycloak, webhook, lab namespaces
+namespace "agents" deleted
+namespace "s1-authz" deleted
+namespace "s1-idp" deleted
+namespace "team-a" deleted
+namespace "team-b" deleted
+namespace "thief" deleted
+removed; the cluster is still there (scripts/platform.sh cluster-down deletes it)
+
+==> images into k3d
+[36mINFO[0m[0000] Importing image(s) into cluster 's1-agent-power' 
+[36mINFO[0m[0000] Starting new tools node...                   
+[36mINFO[0m[0000] Starting node 'k3d-s1-agent-power-tools'     
+[36mINFO[0m[0000] Saving 1 tarball(s) to shared image volume... 
+[36mINFO[0m[0000] Importing images into nodes...               
+[36mINFO[0m[0000] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011164747-file-images.tar' into node 'k3d-s1-agent-power-server-0'... 
+[36mINFO[0m[0000] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011164747-file-images.tar' into node 'k3d-s1-agent-power-agent-0'... 
+[36mINFO[0m[0007] Removing the tarball(s) from image volume... 
+[36mINFO[0m[0008] Removing k3d-tools node...                   
+[36mINFO[0m[0009] Successfully imported image(s)               
+[36mINFO[0m[0009] Successfully imported 1 image(s) into 1 cluster(s) 
+all 2 images present on every node
+
+==> namespaces, TLS secrets, config maps
+
+==> workloads, base RBAC, Keycloak, webhook
+Waiting for deployment "keycloak" rollout to finish: 0 of 1 updated replicas are available...
+deployment "keycloak" successfully rolled out
+deployment "s1-authz" successfully rolled out
+pod/driver condition met
+pod/driver condition met
+
+==> Keycloak task scopes (driver/setup_keycloak.py)
+ready
+s1-idp  keycloak-5bc9b94bf6-dz7vk   1/1   Running   0     45s
+s1-authz  s1-authz-956c45c87-kktwt   1/1   Running   0     45s
+agents  driver   1/1   Running   0     45s
+thief  driver   1/1   Running   0     46s
+team-a  toolbox   1/1   Running   0     46s

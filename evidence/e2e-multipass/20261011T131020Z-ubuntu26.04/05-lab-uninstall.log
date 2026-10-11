@@ -1,0 +1,9 @@
+
+==> placement and variant RBAC, workloads, Keycloak, webhook, lab namespaces
+namespace "agents" deleted
+namespace "s1-authz" deleted
+namespace "s1-idp" deleted
+namespace "team-a" deleted
+namespace "team-b" deleted
+namespace "thief" deleted
+removed; the cluster is still there (scripts/platform.sh cluster-down deletes it)

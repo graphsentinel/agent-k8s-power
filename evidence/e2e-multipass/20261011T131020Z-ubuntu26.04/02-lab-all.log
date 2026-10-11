@@ -1,0 +1,182 @@
+
+==> pull quay.io/keycloak/keycloak:26.8.0 docker.io/library/python:3.14.8-slim-trixie
+
+==> images into k3d
+[36mINFO[0m[0000] Importing image(s) into cluster 's1-agent-power' 
+[36mINFO[0m[0000] Starting new tools node...                   
+[36mINFO[0m[0000] Starting node 'k3d-s1-agent-power-tools'     
+[36mINFO[0m[0000] Saving 1 tarball(s) to shared image volume... 
+[36mINFO[0m[0001] Importing images into nodes...               
+[36mINFO[0m[0001] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011161308-file-images.tar' into node 'k3d-s1-agent-power-server-0'... 
+[36mINFO[0m[0001] Importing images from tarball '/k3d/images/k3d-s1-agent-power-images-20261011161308-file-images.tar' into node 'k3d-s1-agent-power-agent-0'... 
+[36mINFO[0m[0013] Removing the tarball(s) from image volume... 
+[36mINFO[0m[0014] Removing k3d-tools node...                   
+[36mINFO[0m[0015] Successfully imported image(s)               
+[36mINFO[0m[0015] Successfully imported 1 image(s) into 1 cluster(s) 
+all 2 images present on every node
+
+==> namespaces, TLS secrets, config maps
+
+==> workloads, base RBAC, Keycloak, webhook
+Waiting for deployment "keycloak" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "keycloak" rollout to finish: 0 of 1 updated replicas are available...
+deployment "keycloak" successfully rolled out
+deployment "s1-authz" successfully rolled out
+pod/driver condition met
+pod/driver condition met
+
+==> Keycloak task scopes (driver/setup_keycloak.py)
+ready
+
+==> run 1/5
+--- M0 c1
+{"run": "20261011T131411Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T131416Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T131428Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T131434Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T131618Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T131633Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T131657Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T131701Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T131727Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T131753Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T131819Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T131959Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T132010Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+==> run 2/5
+--- M0 c1
+{"run": "20261011T132045Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T132050Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T132101Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T132108Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T132250Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T132306Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T132330Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T132334Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T132400Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T132425Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T132451Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T132632Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T132642Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+==> run 3/5
+--- M0 c1
+{"run": "20261011T132718Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T132722Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T132734Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T132740Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T132925Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T132940Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T133003Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T133007Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T133033Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T133058Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T133124Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T133305Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T133315Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+==> run 4/5
+--- M0 c1
+{"run": "20261011T133351Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T133355Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T133407Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T133413Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T133558Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T133613Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T133637Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T133641Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T133707Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T133733Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T133758Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T133938Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T133949Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+==> run 5/5
+--- M0 c1
+{"run": "20261011T134025Z-M0-c1", "rows": 23, "verdicts": {"MATCH": 4, "OBSERVED": 19}, "controls_failed": []}
+--- M1 c1
+{"run": "20261011T134029Z-M1-c1", "rows": 40, "verdicts": {"MATCH": 21, "OBSERVED": 19}, "controls_failed": []}
+--- M1-L c1
+{"run": "20261011T134041Z-M1-L-c1", "rows": 21, "verdicts": {"MATCH": 4, "OBSERVED": 17}, "controls_failed": []}
+--- M2 c1
+{"run": "20261011T134047Z-M2-c1", "rows": 52, "verdicts": {"MATCH": 31, "OBSERVED": 21}, "controls_failed": []}
+--- M3 c1
+{"run": "20261011T134231Z-M3-c1", "rows": 27, "verdicts": {"MATCH": 21, "UNREACHABLE": 3, "OBSERVED": 3}, "controls_failed": []}
+--- W1ONLY M2 c1
+{"run": "20261011T134247Z-M2-c1", "rows": 16, "verdicts": {"MATCH": 8, "OBSERVED": 8}, "controls_failed": []}
+--- A1ONLY M2 c1b
+{"run": "20261011T134311Z-M2-c1b", "rows": 8, "verdicts": {"MATCH": 7, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V1-M0
+{"run": "20261011T134315Z-V1-M0-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M1
+{"run": "20261011T134341Z-V1-M1-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V1-M2
+{"run": "20261011T134407Z-V1-M2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V2
+{"run": "20261011T134432Z-V2-v1", "rows": 4, "verdicts": {"MATCH": 2, "OBSERVED": 2}, "controls_failed": []}
+--- revocation V3A
+{"run": "20261011T134612Z-V3A-v1", "rows": 3, "verdicts": {"MATCH": 2, "OBSERVED": 1}, "controls_failed": []}
+--- revocation V3B
+{"run": "20261011T134623Z-V3B-v1", "rows": 4, "verdicts": {"MATCH": 1, "OBSERVED": 3}, "controls_failed": []}
+
+Measurements since 2026-10-11T13:14:11Z: 1050 rows; runs per cell expected: 5
+
+| suite | expected cells | matching cells |
+|---|---|---|
+| c1 | 179 | 179 |
+| c1b | 8 | 8 |
+| v1 | 23 | 23 |
+
+verdicts in the new rows: {'MATCH': 535, 'OBSERVED': 500, 'UNREACHABLE': 15}
+cells matching lab/expected.tsv: 210 of 210
+
+ALL CHECKS PASSED

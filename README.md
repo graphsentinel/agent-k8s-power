@@ -207,7 +207,10 @@ If an outcome is meant to change, rebuild the expectation from your own referenc
 | | Python (webhook, driver) | 3.14.8-slim-trixie |
 
 The pinned versions were the latest stable releases on 2026-10-11. The reference measurement used Python 3.12 for the
-webhook and the driver (standard library only) and k3d v5.8.3.
+webhook and the driver (standard library only) and k3d v5.8.3. The pinned versions were then checked from scratch in a
+fresh Ubuntu 26.04 VM (`scripts/multipass-e2e.sh`, Docker 29.1.3 from Ubuntu, 5 runs, then reinstall, one more run and
+uninstall): all 210 cells matched `lab/expected.tsv` in every run
+([evidence/e2e-multipass](evidence/e2e-multipass)).
 
 Credentials in `lab/k8s/realm-s1.json`, `lab/k8s/10-keycloak.yaml`, `lab/k8s/05-workload.yaml` and `lab/driver/*.py`
 are lab-only values. The CA, the server keys and certificates and the kube-apiserver files are generated for each
