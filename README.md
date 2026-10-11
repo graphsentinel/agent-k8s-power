@@ -8,6 +8,8 @@ cluster that anyone can rebuild from zero with a few commands ([Quickstart](#qui
 
 Project page: https://graphsentinel.github.io/agent-k8s-power/
 
+Demo recording (1:52; baseline agent, constrained impersonation and the prototype, open watch after revocation): https://youtu.be/7OE8fS92jgk
+
 - [The problem](#the-problem)
 - [What is compared](#what-is-compared)
 - [Results](#results)
