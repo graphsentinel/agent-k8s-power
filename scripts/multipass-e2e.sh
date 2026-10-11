@@ -24,7 +24,8 @@ if multipass info "$VM" >/dev/null 2>&1; then echo "VM $VM exists; delete it fir
 log "launch $VM: Ubuntu $UBUNTU, $CPUS CPU, $MEM, $DISK"
 multipass launch "$UBUNTU" --name "$VM" --cpus "$CPUS" --memory "$MEM" --disk "$DISK" --timeout 900
 # the VM is kept when the run failed, so it can be inspected (delete it with: multipass delete --purge $VM)
-cleanup() { [ "$KEEP" = 1 ] || [ "${rc:-0}" != 0 ] || { multipass delete --purge "$VM" 2>/dev/null || true; }; }
+# (also when the script stops before or after the steps: any non-zero exit status keeps it)
+cleanup() { local s=$?; [ "$KEEP" = 1 ] || [ "$s" != 0 ] || [ "${rc:-1}" != 0 ] || { multipass delete --purge "$VM" 2>/dev/null || true; }; }
 trap cleanup EXIT
 
 # Source: the committed tree (git archive HEAD) when the working tree is clean, which is exactly what a clone gets.
@@ -75,9 +76,12 @@ if [ "$REINSTALL_CHECK" = 1 ]; then
 fi
 
 log "fetch results"
-multipass exec "$VM" -- bash -c 'cat ~/summary-main.md 2>/dev/null || cat ~/lab/lab/.runtime/summary.md' > "$OUT/summary.md" 2>/dev/null || true
-multipass exec "$VM" -- bash -c 'cd ~/lab && s=$(cat ~/test-started-main 2>/dev/null || cat lab/.runtime/test-started) && awk -F"\t" -v s="$s" "NR==1 || substr(\$1,1,19)>=s" results/measurements.tsv' \
-  > "$OUT/measurements.tsv" || true
+# summary and measurement rows are required: a failed or empty fetch fails the run
+multipass exec "$VM" -- bash -c 'cat ~/summary-main.md 2>/dev/null || cat ~/lab/lab/.runtime/summary.md' > "$OUT/summary.md" \
+  && [ -s "$OUT/summary.md" ] || { echo "fetch failed: summary.md" | tee -a "$OUT/host.log"; rc=1; }
+multipass exec "$VM" -- bash -c 'cd ~/lab && s=$(cat ~/test-started-main 2>/dev/null || cat lab/.runtime/test-started) && awk -F"\t" -v s="$s" "NR==1 || substr(\$1,1,19)>=substr(s,1,19)" results/measurements.tsv' \
+  > "$OUT/measurements.tsv" && [ "$(wc -l < "$OUT/measurements.tsv")" -gt 1 ] \
+  || { echo "fetch failed: measurements.tsv" | tee -a "$OUT/host.log"; rc=1; }
 multipass exec "$VM" -- bash -c 'lsb_release -ds; uname -r; nproc; free -h | head -2; cd ~/lab && scripts/platform.sh status' \
   > "$OUT/environment.txt" 2>&1 || true
 echo "result: exit $rc" | tee -a "$OUT/host.log"
